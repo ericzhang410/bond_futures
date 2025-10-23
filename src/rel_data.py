@@ -1,7 +1,5 @@
 import pandas as pd
 import numpy as np
-data = pd.read_csv("data/oct_data.csv")
-
 _FRACTION_MAP = {
     "½": 0.5,
     "¼": 0.25,
@@ -60,9 +58,8 @@ def trading_day(df: pd.DataFrame) -> pd.Series:
     
     return pd.Series(trading_date, index=df.index, name='TradingDay')
 
-def week_day(df: pd.DataFrame,
-             day_col: str = 'TradingDay',) -> pd.Series:
-    return pd.Series(df['TradingDay'].dt.day_name(),index=df.index,name='WeekDay')
+def week_day(df: pd.DataFrame, day_col: str = 'TradingDay') -> pd.Series:
+    return pd.Series(df[day_col].dt.day_name(), index=df.index, name='WeekDay')
 
 def relative_price(df: pd.DataFrame,
                    day_col: str = 'TradingDay',
@@ -74,13 +71,30 @@ def relative_price(df: pd.DataFrame,
     # Return as a named Series
     return pd.Series(rel, index=df.index, name='RelPrice')
 
-def wkday_sd(df:pd.DataFrame) -> pd.Series:
-    sd = 
-    return 
+def wkday_sd(df: pd.DataFrame, day_col: str = 'WeekDay', price_col: str = 'Relative Price') -> pd.Series:
+    sd = df.groupby(day_col)[price_col].transform('std')
+    return pd.Series(sd, index=df.index, name='DayStdDev')
 
-def wkday_vol(df:pd.DataFrame) -> pd.Series:
-    vol = np.log()
+def wkday_mean(df: pd.DataFrame, day_col: str = 'WeekDay', price_col: str = 'Relative Price') -> pd.Series:
+    mean = df.groupby(day_col)[price_col].transform('mean')
+    return pd.Series(mean, index=df.index, name='DayStdDev')
 
 def df_maker(df: pd.DataFrame) -> pd.DataFrame:
+    copy = clean_data(df)
     out = pd.DataFrame()
-    return 
+    
+    # Build columns that only depend on 'copy' first
+    out['Date'] = copy['Date']
+    out['Price'] = copy['Price']
+    out['TradingDay'] = trading_day(copy)
+    out['TimeOfDay'] = time(copy)
+    
+    out['WeekDay'] = week_day(out, day_col='TradingDay')
+    
+    out['Relative Price'] = relative_price(out, day_col='TradingDay', price_col='Price')
+    
+    out['DaySD'] = wkday_sd(out)
+
+    out['DayMean'] = wkday_mean(out)
+    
+    return out
