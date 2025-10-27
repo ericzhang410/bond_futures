@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bond Futures Overnight Rate</title>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #fff; min-height: 100vh; }
+        #title-banner { text-align: center; padding: 20px 0; }
+        .title { font-size: 32px; font-weight: bold; }
+        .controls-container { max-width: 1200px; margin: 20px auto; padding: 25px; background: #61a5da; border-radius: 8px; display: flex; gap: 20px; }
+        .column { flex: 1; }
+        .column label { display: block; color: #fff; font-weight: bold; font-size: 18px; margin-bottom: 15px; }
+        .radio-group { margin-bottom: 15px; }
+        .radio-group label { display: inline-block; background: #fff; color: #000; padding: 10px 15px; border-radius: 6px; margin-right: 10px; cursor: pointer; border: 2px solid #3498db; }
+        .radio-group input { margin-right: 5px; }
+        .date-inputs { display: flex; gap: 10px; margin-bottom: 15px; }
+        .date-inputs label { flex: 1; display: block; margin-bottom: 0; font-size: 14px; }
+        .date-inputs input { width: 100%; padding: 8px; border: 2px solid #3498db; border-radius: 6px; }
+        .weekday-select { display: none; }
+        .weekday-select select { width: 100%; padding: 8px; border: 2px solid #3498db; border-radius: 6px; min-height: 80px; }
+        #stats-output { max-width: 1200px; margin: 20px auto; padding: 15px; background: #61a5da; color: #fff; border-radius: 6px; text-align: center; }
+        .chart-container { max-width: 1200px; margin: 20px auto; background: #fff; border-radius: 8px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+        #price-chart { width: 100%; height: 600px; }
+    </style>
+</head>
+<body>
+
+<div id="title-banner">
+    <h1 class="title">Bond Futures Overnight Rate</h1>
+</div>
+
+<div class="controls-container">
+    <div class="column">
+        <label>Select Days By</label>
+        <div class="radio-group">
+            <label><input type="radio" name="selection-mode" value="calendar" checked> Calendar</label>
+            <label><input type="radio" name="selection-mode" value="weekday"> Weekday</label>
+        </div>
+        
+        <div id="calendar-inputs" class="date-inputs">
+            <label>Start Date<input type="date" id="date-start"></label>
+            <label>End Date<input type="date" id="date-end"></label>
+        </div>
+        
+        <div id="weekday-inputs" class="weekday-select">
+            <label>Select Weekdays</label>
+            <select id="weekday-select" multiple>
+                <option value="Monday" selected>Monday</option>
+                <option value="Tuesday" selected>Tuesday</option>
+                <option value="Wednesday" selected>Wednesday</option>
+                <option value="Thursday" selected>Thursday</option>
+                <option value="Friday" selected>Friday</option>
+            </select>
+        </div>
+    </div>
+    
+    <div class="column">
+        <label>Aggregation Type</label>
+        <div class="radio-group">
+            <label><input type="radio" name="agg-mode" value="none"> None</label>
+            <label><input type="radio" name="agg-mode" value="selected" checked> Selected Mean/SD</label>
+            <label><input type="radio" name="agg-mode" value="total"> Total Mean/SD</label>
+            <label><input type="radio" name="agg-mode" value="weekday"> Weekday Mean/SD</label>
+        </div>
+    </div>
+</div>
+
+<div id="stats-output">Loading chart data...</div>
+
+<div class="chart-container">
+    <div id="price-chart"></div>
+</div>
+
+<script>
+const state = {
+    selectionMode: 'calendar',
+    startDate: '',
+    endDate: '',
+    selectedWeekdays: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+    aggMode: 'selected'
+};
+
+async function init() {
+    // Get available date range from backend
+    try {
+        const response = await fetch('/api/chart-data?selection_mode=calendar&start_date=2024-10-01&end_date=2024-10-31&agg_mode=none');
+        const result = await response.json();
+        
+        // Extract first/last dates from data if available
+        if (result.data && result.data.traces && result.data.traces.length > 0) {
+            const firstTrace = result.data.traces[0];
+            if (firstTrace.x && firstTrace.x.length > 0) {
+                const firstDate = firstTrace.x[0].split(' ')[0];
+                const lastDate = firstTrace.x[firstTrace.x.length - 1].split(' ')[0];
+                state.startDate = firstDate;
+                state.endDate = lastDate;
+            }
+        }
+    } catch (e) {
+        console.log('Could not fetch initial dates, using defaults');
+        const today = new Date().toISOString().split('T')[0];
+        state.startDate = today;
+        state.endDate = today;
+    }
+    
+    // Set date inputs
+    document.getElementById('date-start').value = state.startDate;
+    document.getElementById('date-end').value = state.endDate;
+    
+    // Add event listeners
+    document.querySelectorAll('input[name="selection-mode"]').forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            state.selectionMode = e.target.value;
+            document.getElementById('calendar-inputs').style.display = state.selectionMode === 'calendar' ? 'flex' : 'none';
+            document.getElementById('weekday-inputs').style.display = state.selectionMode === 'weekday' ? 'block' : 'none';
+            updateChart();
+        });
+    });
+    
+    document.querySelectorAll('input[name="agg-mode"]').forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            state.aggMode = e.target.value;
+            updateChart();
+        });
+    });
+    
+    document.getElementById('date-start').addEventListener('change', (e) => {
+        state.startDate = e.target.value;
+        updateChart();
+    });
+    
+    document.getElementById('date-end').addEventListener('change', (e) => {
+        state.endDate = e.target.value;
+        updateChart();
+    });
+    
+    document.getElementById('weekday-select').addEventListener('change', (e) => {
+        state.selectedWeekdays = Array.from(e.target.selectedOptions).map(opt => opt.value);
+        updateChart();
+    });
+    
+    // Load initial chart
+    updateChart();
+}
+
+async function updateChart() {
+    const params = new URLSearchParams({
+        selection_mode: state.selectionMode,
+        agg_mode: state.aggMode
+    });
+    
+    if (state.selectionMode === 'calendar') {
+        params.append('start_date', state.startDate);
+        params.append('end_date', state.endDate);
+    } else {
+        params.append('weekdays', state.selectedWeekdays.join(','));
+    }
+    
+    try {
+        console.log('Fetching:', `/api/chart-data?${params}`);
+        const response = await fetch(`/api/chart-data?${params}`);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const result = await response.json();
+        console.log('API Response:', result);
+        
+        document.getElementById('stats-output').textContent = result.stats.description;
+        
+        if (result.data && result.data.traces && result.data.traces.length > 0) {
+            Plotly.newPlot('price-chart', result.data.traces, result.data.layout, {
+                responsive: true
+            });
+        } else {
+            document.getElementById('price-chart').innerHTML = '<div style="padding: 2em; color: #999; text-align: center;">No data available for selected criteria</div>';
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        document.getElementById('stats-output').textContent = 'Error loading data: ' + error.message;
+        document.getElementById('price-chart').innerHTML = '<div style="padding: 2em; color: red; text-align: center;">Error loading chart: ' + error.message + '</div>';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+
+</body>
+</html>
