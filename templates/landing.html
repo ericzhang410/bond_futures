@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bond Futures Dashboard</title>
+    <title>Bond's Dashboard</title>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -11,438 +12,370 @@
             box-sizing: border-box;
         }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background: #0a1628;
-            color: #fff;
-            min-height: 100vh;
+        :root {
+            --bg-primary: #0f1419;
+            --bg-secondary: #1a1f2e;
+            --text-primary: #ffffff;
+            --text-secondary: #9ca3af;
+            --accent: #7c3aed;
+            --accent-light: #a78bfa;
+            --border: #2d3748;
+        }
+
+        html, body {
+            font-family: -apple-system, BlinkMacSystemFont, "Trebuchet MS", Roboto, Ubuntu, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            height: 100vh;
             overflow-x: hidden;
-            position: relative;
         }
 
-        .chart-background {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            opacity: 0.35;
-        }
-
-        .chart-canvas {
-            width: 100%;
-            height: 100%;
-        }
-
-        nav {
+        /* Top Navigation */
+        .top-nav {
+            background: var(--bg-secondary);
+            height: 60px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding: 15px 40px;
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            position: relative;
-            z-index: 100;
+            padding: 0 32px;
+            border-bottom: 1px solid var(--border);
+            justify-content: flex-start;
         }
 
         .logo {
-            font-size: 20px;
+            font-size: 22px;
             font-weight: 700;
-            color: #fff;
             letter-spacing: -0.5px;
         }
 
-        .nav-center {
-            display: flex;
-            align-items: center;
-            gap: 30px;
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
+        /* Main Container */
+        .main-container {
+            height: calc(100vh - 60px);
+            overflow-y: auto;
+            padding: 48px 32px;
         }
 
-        .search-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 8px 16px;
-            border-radius: 8px;
-            min-width: 200px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
+        /* Ticker Grid */
+        .ticker-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 24px;
+            margin-bottom: 48px;
+            max-width: 1600px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
-        .search-icon {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 14px;
-        }
-
-        .search-input {
-            border: none;
-            background: transparent;
-            outline: none;
-            color: #fff;
-            font-size: 14px;
-            width: 100%;
-        }
-
-        .search-input::placeholder {
-            color: rgba(255, 255, 255, 0.5);
-        }
-
-        .products-dropdown {
-            position: relative;
-        }
-
-        .products-btn {
-            background: transparent;
-            border: none;
-            color: #fff;
-            font-size: 14px;
-            font-weight: 600;
-            padding: 10px 20px;
-            cursor: pointer;
-            border-radius: 6px;
-            transition: all 0.2s ease;
-        }
-
-        .products-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .products-btn.active {
-            background: rgba(255, 255, 255, 0.15);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        .dropdown-menu {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            margin-top: 10px;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
+        .ticker-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
             border-radius: 12px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            min-width: 150px;
-            padding: 15px;
-            display: none;
-            z-index: 1000;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .dropdown-menu.show {
-            display: block;
-            animation: fadeInDown 0.3s ease;
-        }
-
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .dropdown-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px 15px;
-            border-radius: 8px;
+            overflow: hidden;
             cursor: pointer;
-            transition: all 0.2s ease;
-            color: #333;
+            transition: all 0.3s;
             text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-            position: relative;
-            user-select: none;
+            display: flex;
+            flex-direction: column;
         }
 
-        .dropdown-item:hover {
-            background: rgba(0, 0, 0, 0.05);
+        .ticker-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(124, 58, 237, 0.2);
         }
 
-        .hero {
+        .ticker-chart {
+            width: 100%;
+            height: 240px;
+            background: rgba(0, 0, 0, 0.2);
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: calc(100vh - 80px);
             position: relative;
-            z-index: 10;
-            padding: 40px;
         }
 
-        .hero-content {
-            text-align: center;
-            max-width: 800px;
-            animation: fadeInUp 1s ease;
+        .chart-container {
+            width: 100%;
+            height: 100%;
         }
 
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .hero h1 {
-            font-size: 64px;
-            line-height: 1.2;
-            margin-bottom: 20px;
-            font-weight: 700;
-            background: linear-gradient(135deg, #fff 0%, rgba(255, 255, 255, 0.8) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .hero p {
-            font-size: 20px;
-            color: rgba(255, 255, 255, 0.7);
-            margin-bottom: 40px;
-            line-height: 1.6;
-        }
-
-        .cta-section {
+        .ticker-info {
+            padding: 16px;
+            flex: 1;
             display: flex;
             flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .ticker-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .ticker-header {
+            flex: 1;
+        }
+
+        .ticker-name {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: var(--text-primary);
+        }
+
+        .ticker-subtitle {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .ticker-date {
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        /* Loading state */
+        .loading {
+            display: flex;
             align-items: center;
-            gap: 15px;
+            justify-content: center;
+            gap: 12px;
+            color: var(--text-secondary);
+            font-size: 12px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
 
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 16px 48px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
         }
 
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
-        .benefit-text {
-            font-size: 14px;
-            color: rgba(255, 255, 255, 0.6);
+        /* Error state */
+        .error {
+            color: #f87171;
         }
 
-        @media (max-width: 768px) {
-            nav {
-                flex-wrap: wrap;
-                gap: 15px;
-            }
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
 
-            .nav-center {
-                position: relative;
-                left: 0;
-                transform: none;
-            }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
 
-            .hero h1 {
-                font-size: 40px;
-            }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
 
-            .hero p {
-                font-size: 16px;
-            }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent);
         }
     </style>
 </head>
 <body>
-    <div class="chart-background">
-        <canvas id="chartCanvas" class="chart-canvas"></canvas>
-    </div>
 
-    <nav>
-        <div class="logo">Bond's Dashboard</div>
+<!-- Top Navigation -->
+<div class="top-nav">
+    <div class="logo">Bond's Dashboard</div>
+</div>
+
+<!-- Main Container -->
+<div class="main-container">
+    <!-- Ticker Grid -->
+    <div class="ticker-grid" id="ticker-grid">
+        <!-- Ticker cards will be generated here -->
+    </div>
+</div>
+
+<script>
+const TICKERS = [
+    { symbol: 'TUZ5', name: 'Two Year', subtitle: '2 Year' },
+    { symbol: 'FVZ5', name: 'Five Year', subtitle: '5 Year' },
+    { symbol: 'TYZ5', name: 'Ten Year', subtitle: '10 Year' }
+];
+
+// Format date as MM/DD/YYYY
+function formatDate(dateStr) {
+    const [year, month, day] = dateStr.split('-');
+    return `${month}/${day}/${year}`;
+}
+
+async function generateTickerCards() {
+    const grid = document.getElementById('ticker-grid');
+    grid.innerHTML = '';
+    
+    for (const ticker of TICKERS) {
+        const card = document.createElement('a');
+        card.href = `/dashboard?ticker=${ticker.symbol}`;
+        card.className = 'ticker-card';
         
-        <div class="nav-center">
-            <div class="search-container">
-                <span class="search-icon">🔍</span>
-                <input type="text" class="search-input" id="searchInput" placeholder="Search (Ctrl+K)">
+        card.innerHTML = `
+            <div class="ticker-chart" id="chart-container-${ticker.symbol}">
+                <div class="loading" id="loading-${ticker.symbol}">
+                    <div class="spinner"></div>
+                    <span>Loading...</span>
+                </div>
+                <div class="chart-container" id="chart-${ticker.symbol}" style="display: none;"></div>
             </div>
-            
-            <div class="products-dropdown">
-                <button class="products-btn" id="productsBtn">Products</button>
-                <div class="dropdown-menu" id="dropdownMenu">
-                    <div class="dropdown-item clickable" data-url="/dashboard">TUZ5</div>
+            <div class="ticker-info">
+                <div class="ticker-footer">
+                    <div class="ticker-header">
+                        <div class="ticker-name">${ticker.symbol}</div>
+                        <div class="ticker-subtitle">${ticker.subtitle}</div>
+                    </div>
+                    <div class="ticker-date" id="date-${ticker.symbol}"></div>
                 </div>
             </div>
-        </div>
-    </nav>
+        `;
+        
+        grid.appendChild(card);
+        loadTickerChart(ticker.symbol);
+    }
+}
 
-    <section class="hero">
-        <div class="hero-content">
-            <h1>Look first / Then leap.</h1>
-            <p>The best trades require research, then commitment.</p>
+async function loadTickerChart(ticker) {
+    try {
+        console.log(`Loading chart for ${ticker}...`);
+        
+        // Fetch trading days for this specific ticker
+        const tradingDaysResponse = await fetch(`/api/trading-days?ticker=${ticker}`);
+        
+        if (!tradingDaysResponse.ok) {
+            showError(ticker, 'Data unavailable');
+            console.error(`Trading days request failed for ${ticker}:`, tradingDaysResponse.status);
+            return;
+        }
+        
+        const tradingDaysData = await tradingDaysResponse.json();
+        console.log(`${ticker} trading days:`, tradingDaysData.trading_days.length);
+        
+        if (!tradingDaysData.trading_days || tradingDaysData.trading_days.length === 0) {
+            showError(ticker, 'No data');
+            return;
+        }
+        
+        // Get just the latest date
+        const latestDate = tradingDaysData.trading_days[tradingDaysData.trading_days.length - 1];
+        
+        console.log(`${ticker} latest date:`, latestDate);
+        
+        // Update the date display
+        const dateElement = document.getElementById(`date-${ticker}`);
+        if (dateElement) {
+            dateElement.textContent = formatDate(latestDate);
+        }
+        
+        // Fetch chart data for just that day
+        const chartResponse = await fetch(
+            `/api/chart-data?selection_mode=calendar&ticker=${ticker}&start_date=${latestDate}&end_date=${latestDate}&agg_mode=none`
+        );
+        
+        if (!chartResponse.ok) {
+            showError(ticker, 'Chart failed');
+            console.error(`Chart request failed for ${ticker}:`, chartResponse.status);
+            return;
+        }
+        
+        const chartData = await chartResponse.json();
+        console.log(`${ticker} chart data:`, chartData);
+        
+        if (chartData.data && chartData.data.traces && chartData.data.traces.length > 0) {
+            // Create a clean chart snapshot with just time on x-axis
+            const layout = {
+                paper_bgcolor: 'rgba(0,0,0,0)',
+                plot_bgcolor: 'rgba(0,0,0,0)',
+                showlegend: false,
+                margin: { l: 35, r: 15, t: 10, b: 35 },
+                xaxis: {
+                    showgrid: true,
+                    gridcolor: 'rgba(255,255,255,0.05)',
+                    zeroline: false,
+                    showticklabels: true,
+                    tickformat: '%H:%M',
+                    tickangle: 0,
+                    tickfont: { size: 9 },
+                    type: 'date',
+                    range: ['2000-01-01 18:00:00', '2000-01-02 17:59:00']
+                },
+                yaxis: {
+                    showgrid: true,
+                    gridcolor: 'rgba(255,255,255,0.05)',
+                    zeroline: false,
+                    showticklabels: true,
+                    tickfont: { size: 9 }
+                },
+                font: {
+                    size: 9,
+                    color: '#9ca3af',
+                    family: '-apple-system, BlinkMacSystemFont, "Trebuchet MS", Roboto, Ubuntu, sans-serif'
+                },
+                hovermode: 'x unified'
+            };
             
-            <div class="cta-section">
-                <button class="btn-primary" onclick="window.location.href='/dashboard'">Get started for free</button>
-                <span class="benefit-text">No credit card needed</span>
+            // Use all traces with clean styling
+            const traces = chartData.data.traces.map((trace, index) => ({
+                ...trace,
+                line: {
+                    width: 1.2
+                },
+                opacity: 0.75,
+                hoverinfo: 'y'
+            }));
+            
+            const chartElement = document.getElementById(`chart-${ticker}`);
+            const loadingElement = document.getElementById(`loading-${ticker}`);
+            
+            // Hide loading, show chart
+            loadingElement.style.display = 'none';
+            chartElement.style.display = 'block';
+            
+            Plotly.newPlot(
+                `chart-${ticker}`,
+                traces,
+                layout,
+                {
+                    responsive: true,
+                    displayModeBar: false,
+                    staticPlot: false
+                }
+            );
+        } else {
+            showError(ticker, 'No chart data');
+        }
+    } catch (error) {
+        console.error(`Error loading ${ticker}:`, error);
+        showError(ticker, 'Error');
+    }
+}
+
+function showError(ticker, message) {
+    const loadingElement = document.getElementById(`loading-${ticker}`);
+    if (loadingElement) {
+        loadingElement.innerHTML = `
+            <div style="color: #f87171; font-size: 12px;">
+                ${message}
             </div>
-        </div>
-    </section>
+        `;
+    }
+}
 
-    <script>
-        // Search functionality
-        const searchInput = document.getElementById('searchInput');
-        searchInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                const searchTerm = searchInput.value.trim().toUpperCase();
-                if (searchTerm === 'TUZ5') {
-                    window.location.href = '/dashboard';
-                }
-                searchInput.value = '';
-            }
-        });
+document.addEventListener('DOMContentLoaded', generateTickerCards);
+</script>
 
-        // Dropdown toggle
-        const productsBtn = document.getElementById('productsBtn');
-        const dropdownMenu = document.getElementById('dropdownMenu');
-
-        productsBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            dropdownMenu.classList.toggle('show');
-            productsBtn.classList.toggle('active');
-        });
-
-        document.addEventListener('click', (e) => {
-            const isOutsideDropdown = !e.target.closest('.products-dropdown');
-            if (isOutsideDropdown) {
-                dropdownMenu.classList.remove('show');
-                productsBtn.classList.remove('active');
-            }
-        });
-
-        dropdownMenu.addEventListener('click', (e) => {
-            e.stopPropagation();
-        });
-
-        // Handle clickable dropdown items - Navigate to /dashboard
-        document.querySelectorAll('.dropdown-item.clickable').forEach(item => {
-            item.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                const url = item.getAttribute('data-url');
-                if (url) {
-                    console.log('Navigating to:', url);  // DEBUG
-                    window.location.href = url;
-                }
-            });
-        });
-
-        // Animated background
-        const canvas = document.getElementById('chartCanvas');
-        const ctx = canvas.getContext('2d');
-
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
-
-        class CandleBar {
-            constructor(x, baseY, index) {
-                this.x = x;
-                this.baseY = baseY;
-                this.index = index;
-                this.width = 10;
-                this.time = 0;
-                this.generateNewBar();
-            }
-
-            generateNewBar() {
-                this.height = Math.random() * 80 + 20;
-                this.isGreen = Math.random() > 0.5;
-                this.color = this.isGreen ? 'rgba(0, 255, 150, 0.7)' : 'rgba(255, 50, 100, 0.7)';
-            }
-
-            update(globalTime) {
-                this.time = globalTime;
-                const subtleWave = Math.sin(globalTime * 0.3 + this.index * 0.2) * 8;
-                this.yOffset = subtleWave;
-            }
-
-            draw() {
-                const y = this.baseY + this.yOffset;
-                ctx.fillStyle = this.color;
-                ctx.fillRect(this.x - this.width / 2, y - this.height / 2, this.width, this.height);
-            }
-        }
-
-        let candlesticks = [];
-        let globalTime = 0;
-        const spacing = 25;
-        const baseY = canvas.height / 2;
-        let updateCounter = 0;
-        const updateInterval = 120;
-
-        function generateCandlesticks() {
-            candlesticks = [];
-            const count = Math.ceil(canvas.width / spacing) + 5;
-            for (let i = 0; i < count; i++) {
-                candlesticks.push(new CandleBar(i * spacing, baseY, i));
-            }
-        }
-
-        generateCandlesticks();
-
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.02)';
-            ctx.lineWidth = 1;
-            for (let y = 0; y < canvas.height; y += 50) {
-                ctx.beginPath();
-                ctx.moveTo(0, y);
-                ctx.lineTo(canvas.width, y);
-                ctx.stroke();
-            }
-
-            globalTime += 0.01;
-
-            updateCounter++;
-            if (updateCounter >= updateInterval) {
-                updateCounter = 0;
-                candlesticks.forEach(candle => {
-                    candle.generateNewBar();
-                });
-            }
-
-            candlesticks.forEach((candle) => {
-                candle.update(globalTime);
-                candle.draw();
-            });
-
-            requestAnimationFrame(animate);
-        }
-
-        animate();
-
-        window.addEventListener('resize', () => {
-            resizeCanvas();
-            generateCandlesticks();
-        });
-    </script>
 </body>
 </html>
