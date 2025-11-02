@@ -1,52 +1,46 @@
 Bond Futures Dashboard
-A web dashboard for analyzing bond futures trading data (TUZ5, FVZ5, TYZ5) with interactive charts and date filtering.
+Bond Futures Dashboard is a full-stack web application providing comprehensive overnight rate analysis for treasury bond futures. A FastAPI REST API delivers intraday price analytics, historical data visualization, and multi-ticker comparison. Interactive charts powered by Plotly display real-time trading patterns with customizable date range and weekday filtering. Modern responsive UI built with HTML/CSS/JavaScript offers dark/light mode and dynamic theme switching for enhanced user experience.
 
-Installation
-Install dependencies:
+Technologies Used
 
-bash
-pip install -r requirements.txt
-Add CSV files to the data/ folder:
+FastAPI
 
-TUZ5.csv
+Python
 
-FVZ5.csv
+Pandas
 
-TYZ5.csv
+NumPy
 
-Run the server:
+Plotly
 
-bash
-python main.py
-Open http://localhost:8000 in your browser
+HTML5/CSS3/JavaScript
 
-Features
-Multi-ticker support (2Y, 5Y, 10Y Treasury)
+Uvicorn
 
-Interactive intraday charts
+Current Features
 
-Date range and weekday filtering
+Explore multiple bond futures tickers (TUZ5 2-Year, FVZ5 5-Year, TYZ5 10-Year Treasury)
 
-Dark/light mode toggle
+Real-time intraday price tracking with time-of-day visualization
 
-Landing page with ticker previews
+Interactive calendar-based date range selection for historical analysis
 
-File Structure
-text
-├── main.py              # FastAPI backend
-├── requirements.txt     # Dependencies
-├── templates/
-│   ├── index.html      # Dashboard
-│   └── landing.html    # Landing page
-├── data/
-│   ├── TUZ5.csv
-│   ├── FVZ5.csv
-│   └── TYZ5.csv
-└── src/
-    └── rel_data.py     # Data utilities
-Usage
-Landing Page: Click any ticker card to view the full dashboard
+Weekday-based filtering for comparative analysis across trading days
 
-Dashboard: Use the sidebar calendar to select dates, adjust filters, and toggle themes
+Multiple aggregation modes (None, Selected Mean/SD, Total Mean/SD)
 
-Charts: Hover to see values, select date ranges to compare multiple days
+Historical price data with statistical analysis and metrics
+
+Mean and standard deviation overlay visualization for trend analysis
+
+Dark/light mode theme toggle with persistent preference storage
+
+Landing page with live ticker previews showing latest trading data
+
+Responsive grid layout optimized for all screen sizes
+
+Hover-enabled interactive data inspection on all charts
+
+Multi-day comparison with visual overlays
+
+Relative price calculations for normalized analysis
