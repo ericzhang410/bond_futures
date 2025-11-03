@@ -24,6 +24,7 @@
             --border: #2A2E39;
         }
 
+
         html.light-mode {
             --bg-primary: #ffffff;
             --bg-secondary: #f5f5f5;
@@ -45,6 +46,7 @@
             transition: background 0.3s ease, color 0.3s ease;
         }
 
+
         /* Top Navigation Bar */
         .top-nav {
             background: var(--bg-secondary);
@@ -56,11 +58,13 @@
             justify-content: space-between;
         }
 
+
         .logo-section {
             display: flex;
             align-items: center;
             gap: 20px;
         }
+
 
         .app-title {
             font-size: 18px;
@@ -71,9 +75,11 @@
             transition: color 0.2s;
         }
 
+
         .app-title:hover {
             color: var(--accent);
         }
+
 
         .nav-divider {
             width: 1px;
@@ -81,16 +87,46 @@
             background: var(--border);
         }
 
+
         .chart-title {
             font-size: 15px;
             color: var(--text-secondary);
             font-weight: 400;
         }
 
+
         .top-nav-right {
             display: flex;
             align-items: center;
             gap: 12px;
+        }
+
+
+        .view-toggle-switch {
+            display: flex;
+            align-items: center;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 4px;
+            cursor: pointer;
+        }
+
+        .switch-option {
+            padding: 6px 16px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.3s;
+            background: transparent;
+            color: var(--text-secondary);
+            border: none;
+            cursor: pointer;
+        }
+
+        .switch-option.active {
+            background: var(--accent);
+            color: white;
         }
 
         .theme-toggle {
@@ -106,10 +142,12 @@
             padding: 2px;
         }
 
+
         .theme-toggle:hover {
             background: var(--bg-hover);
             border-color: var(--accent);
         }
+
 
         .theme-toggle-circle {
             width: 26px;
@@ -123,9 +161,11 @@
             transition: transform 0.3s ease;
         }
 
+
         .theme-toggle.light-mode .theme-toggle-circle {
             transform: translateX(16px);
         }
+
 
         /* Main Layout */
         .main-container {
@@ -133,6 +173,7 @@
             height: calc(100vh - 50px);
             gap: 0;
         }
+
 
         /* Left Sidebar - Calendar */
         .sidebar {
@@ -146,9 +187,11 @@
             flex-shrink: 0;
         }
 
+
         .sidebar-icon {
             display: none;
         }
+
 
         /* Control Panel */
         .control-panel {
@@ -158,9 +201,11 @@
             height: 100%;
         }
 
+
         .control-section {
             margin: 0;
         }
+
 
         .control-label {
             font-size: 11px;
@@ -172,11 +217,13 @@
             display: block;
         }
 
+
         .radio-options {
             display: flex;
             flex-direction: column;
             gap: 8px;
         }
+
 
         .radio-option {
             display: flex;
@@ -189,21 +236,25 @@
             border: 1px solid transparent;
         }
 
+
         .radio-option:hover {
             background: var(--bg-hover);
             border-color: var(--border);
         }
+
 
         .radio-option input[type="radio"] {
             margin-right: 10px;
             accent-color: var(--accent);
         }
 
+
         .radio-option label {
             cursor: pointer;
             color: var(--text-primary);
             font-size: 13px;
         }
+
 
         /* Custom Calendar Widget */
         .calendar-widget {
@@ -213,17 +264,21 @@
             border: none;
         }
 
+
         .calendar-tabs {
             display: none;
         }
+
 
         .calendar-view-content {
             display: block !important;
         }
 
+
         .calendar-view-content.active {
             display: block !important;
         }
+
 
         /* Calendar Grid View */
         .calendar-header {
@@ -232,6 +287,7 @@
             justify-content: space-between;
             margin-bottom: 12px;
         }
+
 
         .calendar-nav {
             background: none;
@@ -248,16 +304,19 @@
             transition: all 0.2s;
         }
 
+
         .calendar-nav:hover {
             background: var(--bg-hover);
             color: var(--text-primary);
         }
+
 
         .calendar-month {
             font-size: 12px;
             font-weight: 600;
             color: var(--text-primary);
         }
+
 
         .calendar-grid {
             display: grid;
@@ -266,6 +325,7 @@
             margin-bottom: 12px;
         }
 
+
         .calendar-weekday {
             text-align: center;
             font-size: 10px;
@@ -273,6 +333,7 @@
             padding: 4px 2px;
             font-weight: 500;
         }
+
 
         .calendar-day {
             aspect-ratio: 1;
@@ -288,9 +349,11 @@
             min-width: 24px;
         }
 
+
         .calendar-day:hover:not(.other-month) {
             background: var(--bg-hover);
         }
+
 
         .calendar-day.other-month {
             color: #4a4a4a;
@@ -298,13 +361,16 @@
             font-size: 9px;
         }
 
+
         html.light-mode .calendar-day.other-month {
             color: #b0b0b0;
         }
 
+
         .calendar-day.other-month:hover {
             background: transparent;
         }
+
 
         .calendar-day.has-data {
             background: rgba(92, 187, 246, 0.25);
@@ -313,10 +379,12 @@
             border: 1px solid rgba(92, 187, 246, 0.4);
         }
 
+
         .calendar-day.has-data:hover {
             background: rgba(92, 187, 246, 0.35);
             border-color: rgba(92, 187, 246, 0.6);
         }
+
 
         .calendar-day.selected {
             background: var(--accent);
@@ -325,19 +393,23 @@
             border: 1px solid var(--accent);
         }
 
+
         .calendar-day.in-range {
             background: rgba(41, 98, 255, 0.2);
             color: var(--accent-light);
         }
+
 
         html.light-mode .calendar-day.in-range {
             background: rgba(30, 64, 175, 0.15);
             color: var(--accent);
         }
 
+
         .calendar-day.today {
             border: 1px solid var(--accent);
         }
+
 
         /* Custom Range View */
         .custom-range {
@@ -346,11 +418,13 @@
             gap: 10px;
         }
 
+
         .date-input-group {
             display: flex;
             flex-direction: column;
             gap: 4px;
         }
+
 
         .date-input-label {
             font-size: 9px;
@@ -359,6 +433,7 @@
             font-weight: 600;
             letter-spacing: 0.5px;
         }
+
 
         .date-input {
             background: var(--bg-hover);
@@ -370,19 +445,23 @@
             transition: all 0.2s;
         }
 
+
         .date-input:focus {
             outline: none;
             border-color: var(--accent);
             background: var(--bg-tertiary);
         }
 
+
         .date-input::placeholder {
             color: var(--text-secondary);
         }
 
+
         .weekday-select {
             display: none;
         }
+
 
         .weekday-select select {
             width: 100%;
@@ -395,6 +474,7 @@
             max-height: 120px;
         }
 
+
         /* Chart Area */
         .chart-area {
             flex: 1;
@@ -403,6 +483,7 @@
             position: relative;
             min-width: 0;
         }
+
 
         /* Stats Banner */
         .stats-banner {
@@ -418,15 +499,18 @@
             flex-shrink: 0;
         }
 
+
         .stats-label {
             color: var(--text-secondary);
             font-weight: 500;
         }
 
+
         .stats-value {
             color: var(--text-primary);
             font-weight: 400;
         }
+
 
         /* Chart Container */
         .chart-wrapper {
@@ -434,18 +518,68 @@
             background: var(--bg-primary);
             position: relative;
             padding: 12px;
-            overflow: hidden;
+            overflow: auto;
             min-height: 0;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
+
         #price-chart {
             width: 100%;
             height: 100%;
             background: var(--bg-primary);
         }
+
+        #data-table {
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+        }
+
+        #data-table table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--bg-primary);
+        }
+
+        #data-table thead {
+            position: sticky;
+            top: 0;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+        }
+
+        #data-table th {
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 12px;
+            border-right: 1px solid var(--border);
+        }
+
+        #data-table th:last-child {
+            border-right: none;
+        }
+
+        #data-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+            border-right: 1px solid var(--border);
+            font-size: 12px;
+            color: var(--text-primary);
+        }
+
+        #data-table td:last-child {
+            border-right: none;
+        }
+
+        #data-table tr:hover {
+            background: var(--bg-tertiary);
+        }
+
 
         /* Floating Legend */
         .chart-legend {
@@ -460,32 +594,66 @@
             color: var(--text-primary);
             z-index: 1000;
             border: 1px solid var(--border);
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
         }
+
+        .legend-content {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .close-legend {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 16px;
+            padding: 0;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s;
+            flex-shrink: 0;
+        }
+
+        .close-legend:hover {
+            color: var(--text-primary);
+        }
+
 
         html.light-mode .chart-legend {
             background: rgba(255, 255, 255, 0.9);
             border: 1px solid var(--border);
         }
 
+
         .legend-title {
             font-weight: 600;
-            margin-bottom: 4px;
             color: var(--accent);
         }
+
 
         /* Scrollbar Styling */
         ::-webkit-scrollbar {
             width: 6px;
         }
 
+
         ::-webkit-scrollbar-track {
             background: var(--bg-secondary);
         }
+
 
         ::-webkit-scrollbar-thumb {
             background: var(--bg-tertiary);
             border-radius: 3px;
         }
+
 
         ::-webkit-scrollbar-thumb:hover {
             background: var(--bg-hover);
@@ -494,6 +662,7 @@
 </head>
 <body>
 
+
 <!-- Top Navigation -->
 <div class="top-nav">
     <div class="logo-section">
@@ -501,12 +670,17 @@
         <div class="nav-divider"></div>
         <div class="chart-title">Overnight Rate Analysis</div>
     </div>
+    <div class="view-toggle-switch">
+        <button class="switch-option active" id="switch-graph">Graph</button>
+        <button class="switch-option" id="switch-table">Table</button>
+    </div>
     <div class="top-nav-right">
         <div class="theme-toggle" id="theme-toggle" title="Toggle dark/light mode">
             <div class="theme-toggle-circle">🌙</div>
         </div>
     </div>
 </div>
+
 
 <!-- Main Container -->
 <div class="main-container">
@@ -545,6 +719,7 @@
                 </div>
             </div>
 
+
             <!-- Custom Range -->
             <div class="control-section weekday-select" id="weekday-inputs" style="display: none;">
                 <label class="control-label">Select Weekdays</label>
@@ -556,6 +731,7 @@
                     <option value="Friday" selected>Friday</option>
                 </select>
             </div>
+
 
             <!-- Manual Date Inputs -->
             <div class="control-section" id="date-inputs-section" style="display: none;">
@@ -592,6 +768,7 @@
         </div>
     </div>
 
+
     <!-- Chart Area -->
     <div class="chart-area">
         <!-- Stats Banner -->
@@ -600,27 +777,35 @@
             <span class="stats-value" id="stats-output">Loading data...</span>
         </div>
 
+
         <!-- Chart Wrapper -->
         <div class="chart-wrapper">
-            <div class="chart-legend">
-                <div class="legend-title" id="legend-title">TUZ5 Overnight Rate</div>
-                <div>Blue dates have trading data available</div>
+            <div class="chart-legend" id="chart-legend">
+                <div class="legend-content">
+                    <div class="legend-title" id="legend-title">TUZ5 Overnight Rate</div>
+                    <div>Blue dates have trading data available</div>
+                </div>
+                <button class="close-legend" id="close-legend">×</button>
             </div>
             <div id="price-chart"></div>
+            <div id="data-table" style="display: none;"></div>
         </div>
     </div>
 </div>
+
 
 <script>
 // Get ticker from URL query parameter or default to TUZ5
 const urlParams = new URLSearchParams(window.location.search);
 const TICKER = urlParams.get('ticker') || 'TUZ5';
 
+
 const TICKER_NAMES = {
     'TUZ5': '2 Year',
     'FVZ5': '5 Year',
     'TYZ5': '10 Year'
 };
+
 
 const state = {
     selectionMode: 'calendar',
@@ -632,22 +817,52 @@ const state = {
     aggMode: 'selected',
     currentMonth: new Date(),
     tradingDays: new Set(),
-    darkMode: true
+    darkMode: true,
+    currentChartData: null,
+    legendVisible: true
 };
+
 
 // Update page title and header
 document.title = `${TICKER} - Overnight Rate Analysis`;
 document.getElementById('home-link').textContent = TICKER;
 document.getElementById('legend-title').textContent = `${TICKER} Overnight Rate`;
 
+
 // Home link
 document.getElementById('home-link').addEventListener('click', () => {
     window.location.href = '/';
 });
 
+
+// Close legend button
+document.getElementById('close-legend').addEventListener('click', () => {
+    state.legendVisible = false;
+    document.getElementById('chart-legend').style.display = 'none';
+});
+
+
+// View Toggle Switch
+document.getElementById('switch-graph').addEventListener('click', () => {
+    document.getElementById('switch-graph').classList.add('active');
+    document.getElementById('switch-table').classList.remove('active');
+    document.getElementById('price-chart').style.display = 'block';
+    document.getElementById('data-table').style.display = 'none';
+});
+
+document.getElementById('switch-table').addEventListener('click', () => {
+    document.getElementById('switch-table').classList.add('active');
+    document.getElementById('switch-graph').classList.remove('active');
+    document.getElementById('price-chart').style.display = 'none';
+    document.getElementById('data-table').style.display = 'block';
+    renderTable();
+});
+
+
 // Theme Toggle
 const themeToggle = document.getElementById('theme-toggle');
 const html = document.documentElement;
+
 
 if (localStorage.getItem('theme') === 'light') {
     state.darkMode = false;
@@ -655,6 +870,7 @@ if (localStorage.getItem('theme') === 'light') {
     themeToggle.classList.add('light-mode');
     themeToggle.querySelector('.theme-toggle-circle').textContent = '☀️';
 }
+
 
 themeToggle.addEventListener('click', () => {
     state.darkMode = !state.darkMode;
@@ -673,6 +889,7 @@ themeToggle.addEventListener('click', () => {
     updateChart();
 });
 
+
 // Date formatting utilities
 function formatDateISO(date) {
     if (typeof date === 'string') return date;
@@ -681,6 +898,7 @@ function formatDateISO(date) {
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
 }
+
 
 function formatDateDisplay(dateStr) {
     if (!dateStr) return '';
@@ -696,6 +914,79 @@ function parseDisplayDate(displayStr) {
     return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
 }
 
+
+function renderTable() {
+    if (!state.currentChartData?.traces?.[0]) {
+        document.getElementById('data-table').innerHTML = '<div style="padding: 20px; color: var(--text-secondary);">No data available</div>';
+        return;
+    }
+
+
+    // Collect all data points from all traces
+    let allRows = [];
+    const traces = state.currentChartData.traces;
+    
+    for (let traceIdx = 0; traceIdx < traces.length; traceIdx++) {
+        const trace = traces[traceIdx];
+        
+        // Skip aggregate traces (mean/SD lines)
+        if (trace.name && (trace.name.includes('Mean') || trace.name.includes('±1SD'))) {
+            continue;
+        }
+        
+        // Collect each data point
+        for (let i = 0; i < (trace.x || []).length; i++) {
+            const time = trace.x[i].substring(11, 16);  // Extract HH:MM
+            const fullDateTime = trace.x[i];  // Full datetime for sorting
+            const tradingDay = trace.customdata ? trace.customdata[i] : 'N/A';
+            
+            // SKIP N/A dates
+            if (tradingDay === 'N/A') {
+                continue;
+            }
+            
+            const relativePrice = (trace.y[i] || 0).toFixed(6);
+            const price = (trace.actual_prices && trace.actual_prices[i] !== undefined) 
+                ? trace.actual_prices[i].toFixed(6) 
+                : (trace.y[i] || 0).toFixed(6);
+            
+            allRows.push({
+                time: time,
+                fullDateTime: fullDateTime,
+                tradingDay: tradingDay,
+                relativePrice: relativePrice,
+                price: price
+            });
+        }
+    }
+    
+    // Sort by trading day THEN by time chronologically
+    allRows.sort((a, b) => {
+        // First sort by trading day
+        if (a.tradingDay !== b.tradingDay) {
+            return a.tradingDay.localeCompare(b.tradingDay);
+        }
+        // Then sort by time
+        return a.fullDateTime.localeCompare(b.fullDateTime);
+    });
+    
+    // Build table HTML
+    let html = '<table><thead><tr><th>Time</th><th>Trading Day</th><th>Relative Price</th><th>Price</th></tr></thead><tbody>';
+    
+    for (let i = 0; i < allRows.length; i++) {
+        html += `<tr><td>${allRows[i].time}</td><td>${allRows[i].tradingDay}</td><td>${allRows[i].relativePrice}</td><td>${allRows[i].price}</td></tr>`;
+    }
+    
+    html += '</tbody></table>';
+    document.getElementById('data-table').innerHTML = html;
+    
+    // Auto-scroll table to top
+    const tableContainer = document.getElementById('data-table');
+    if (tableContainer) {
+        tableContainer.scrollTop = 0;
+    }
+}
+
 // Calendar class
 class Calendar {
     constructor() {
@@ -704,10 +995,12 @@ class Calendar {
         this.init();
     }
 
+
     init() {
         this.bindEvents();
         this.loadTradingDays();
     }
+
 
     bindEvents() {
         document.getElementById('prev-month').addEventListener('click', () => {
@@ -715,10 +1008,12 @@ class Calendar {
             this.render();
         });
 
+
         document.getElementById('next-month').addEventListener('click', () => {
             state.currentMonth.setMonth(state.currentMonth.getMonth() + 1);
             this.render();
         });
+
 
         document.getElementById('date-start-input').addEventListener('change', (e) => {
             const startDate = parseDisplayDate(e.target.value);
@@ -729,6 +1024,7 @@ class Calendar {
             }
         });
 
+
         document.getElementById('date-end-input').addEventListener('change', (e) => {
             const endDate = parseDisplayDate(e.target.value);
             if (endDate) {
@@ -738,6 +1034,7 @@ class Calendar {
             }
         });
     }
+
 
     async loadTradingDays() {
         try {
@@ -763,6 +1060,7 @@ class Calendar {
         updateChart();
     }
 
+
     generateSampleTradingDays() {
         const today = new Date();
         for (let i = -180; i <= 90; i++) {
@@ -777,6 +1075,7 @@ class Calendar {
         state.startDate = sortedDays[sortedDays.length - 1];
         state.endDate = state.startDate;
     }
+
 
     render() {
         const grid = document.getElementById('calendar-grid');
@@ -891,7 +1190,9 @@ class Calendar {
     }
 }
 
+
 let calendar;
+
 
 async function init() {
     calendar = new Calendar();
@@ -920,6 +1221,7 @@ async function init() {
     });
 }
 
+
 async function updateChart() {
     const params = new URLSearchParams({
         selection_mode: state.selectionMode,
@@ -942,6 +1244,7 @@ async function updateChart() {
         }
         
         const result = await response.json();
+        state.currentChartData = result.data;
         document.getElementById('stats-output').textContent = result.stats.description;
         
         if (result.data && result.data.traces && result.data.traces.length > 0) {
@@ -968,13 +1271,18 @@ async function updateChart() {
                     gridcolor: gridColor,
                     color: textColor
                 },
-                margin: { l: 50, r: 20, t: 20, b: 40 }
+                margin: { l: 50, r: 20, t: 20, b: 40 },
+                hovermode: false
             };
             
             Plotly.newPlot('price-chart', result.data.traces, layout, {
                 responsive: true,
                 displayModeBar: false
             });
+
+            setTimeout(() => {
+            Plotly.Plots.resize('price-chart');
+            }, 100);
         } else {
             document.getElementById('price-chart').innerHTML = 
                 '<div style="padding: 2em; color: ' + (state.darkMode ? '#787B86' : '#666666') + '; text-align: center;">No data available</div>';
@@ -985,8 +1293,10 @@ async function updateChart() {
     }
 }
 
+
 document.addEventListener('DOMContentLoaded', init);
 </script>
+
 
 </body>
 </html>

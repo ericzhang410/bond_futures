@@ -10,6 +10,8 @@ import json
 from typing import Optional
 
 
+
+
 # Make rel_data importable
 THIS_DIR = os.path.dirname(os.path.abspath(__file__))
 SRC_DIR = os.path.join(THIS_DIR, 'src')
@@ -17,20 +19,30 @@ sys.path.insert(0, SRC_DIR)
 from rel_data import df_maker
 
 
+
+
 # Initialize FastAPI
 app = FastAPI(title="Bond Futures Dashboard")
+
+
 
 
 # Mount static files
 app.mount("/static", StaticFiles(directory=os.path.join(THIS_DIR, "static")), name="static")
 
 
+
+
 # ============================================================================
 # MULTI-TICKER DATA LOADING
 # ============================================================================
 
+
+
 AVAILABLE_TICKERS = ['TUZ5', 'FVZ5', 'TYZ5']
 ticker_data = {}
+
+
 
 def load_all_tickers():
     """Load all ticker data on startup"""
@@ -71,8 +83,12 @@ def load_all_tickers():
             print(f"✗ Error loading {ticker}: {e}")
 
 
+
+
 # Load all tickers on startup
 load_all_tickers()
+
+
 
 # If no tickers loaded, load default TUZ5 data for backward compatibility
 if not ticker_data:
@@ -100,9 +116,13 @@ if not ticker_data:
         print(f"✗ Critical error loading default data: {e}")
 
 
+
+
 # ============================================================================
 # UTILITY FUNCTIONS - NaN Handling
 # ============================================================================
+
+
 
 def convert_nan_to_none(obj):
     """Recursively convert NaN and Infinity values to None for JSON serialization"""
@@ -125,12 +145,16 @@ def convert_nan_to_none(obj):
     return obj
 
 
+
+
 def get_ticker_data(ticker):
     """Get dataframe for a specific ticker"""
     ticker_upper = ticker.upper()
     if ticker_upper not in ticker_data:
         raise HTTPException(status_code=404, detail=f"Ticker {ticker} not found. Available: {list(ticker_data.keys())}")
     return ticker_data[ticker_upper]
+
+
 
 
 def get_trading_days_list(ticker):
@@ -145,9 +169,13 @@ def get_trading_days_list(ticker):
         return []
 
 
+
+
 # ============================================================================
 # API ENDPOINTS - Trading Days
 # ============================================================================
+
+
 
 @app.get("/api/trading-days")
 async def get_trading_days(ticker: Optional[str] = Query(None)):
@@ -194,9 +222,13 @@ async def get_trading_days(ticker: Optional[str] = Query(None)):
         }
 
 
+
+
 # ============================================================================
 # ROUTES
 # ============================================================================
+
+
 
 @app.get("/", response_class=HTMLResponse)
 async def root():
@@ -206,6 +238,8 @@ async def root():
         return "<h1>Landing page not found</h1>"
     with open(html_path, "r", encoding="utf-8") as f:
         return f.read()
+
+
 
 
 @app.get("/dashboard", response_class=HTMLResponse)
@@ -223,9 +257,13 @@ async def dashboard():
     return content
 
 
+
+
 # ============================================================================
-# CHART DATA ENDPOINT - Enhanced with NaN Handling
+# CHART DATA ENDPOINT - WITH PROPER PRICE HANDLING
 # ============================================================================
+
+
 
 @app.get("/api/chart-data")
 async def get_chart_data(
@@ -237,7 +275,7 @@ async def get_chart_data(
     agg_mode: str = Query("selected", description="none, selected, or total")
 ):
     """
-    Get filtered chart data and statistics
+    Get filtered chart data and statistics with proper price handling
     """
     try:
         # Default to TUZ5 if not specified
@@ -279,9 +317,20 @@ async def get_chart_data(
         traces = []
         for label in selected_days:
             day_df = filtered.query('DayLabel == @label')
+            
+            # Handle price data - use actual price if available, otherwise relative price
+            actual_prices = []
+            for idx, row in day_df.iterrows():
+                if 'Price' in day_df.columns and pd.notna(row.get('Price')) and row.get('Price') != 0:
+                    actual_prices.append(float(row['Price']))
+                else:
+                    actual_prices.append(float(row['Relative Price']))
+            
             traces.append({
                 'x': day_df['TimePlot'].dt.strftime('%Y-%m-%d %H:%M:%S').tolist(),
                 'y': day_df['Relative Price'].tolist(),
+                'customdata': day_df['DayStr'].tolist(),
+                'actual_prices': actual_prices,
                 'type': 'scatter',
                 'mode': 'lines',
                 'name': label,
@@ -379,9 +428,13 @@ async def get_chart_data(
         }
 
 
+
+
 # ============================================================================
 # HELPER FUNCTIONS
 # ============================================================================
+
+
 
 def get_agg_df(filtered, agg_mode, selected_days, full_df):
     """Helper function to get aggregation dataframe"""
@@ -401,9 +454,13 @@ def get_agg_df(filtered, agg_mode, selected_days, full_df):
     return agg_df, label
 
 
+
+
 # ============================================================================
 # STARTUP EVENT
 # ============================================================================
+
+
 
 @app.on_event("startup")
 async def startup_event():
@@ -423,6 +480,8 @@ async def startup_event():
     print("  - GET /api/trading-days (Trading days list)")
     print("  - GET /api/chart-data (Chart data with filters)")
     print("=" * 70)
+
+
 
 
 if __name__ == '__main__':
