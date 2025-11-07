@@ -50,13 +50,3 @@ The Bond Futures Dashboard offers traders and analysts a powerful tool to track,
 ### Data & Deployment
 - **CSV** - Data storage format
 - **Vercel** - Deployment platform
-
-## Getting Started
-
-### Prerequisites
-- Python 3.8 or higher
-- pip package manager
-
-### Installation
-
-1. Clone the repository:
