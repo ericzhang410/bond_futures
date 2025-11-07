@@ -12,11 +12,13 @@ from typing import Optional
 
 
 
+
 # Make rel_data importable
 THIS_DIR = os.path.dirname(os.path.abspath(__file__))
 SRC_DIR = os.path.join(THIS_DIR, 'src')
 sys.path.insert(0, SRC_DIR)
 from rel_data import df_maker
+
 
 
 
@@ -27,8 +29,10 @@ app = FastAPI(title="Bond Futures Dashboard")
 
 
 
+
 # Mount static files
 app.mount("/static", StaticFiles(directory=os.path.join(THIS_DIR, "static")), name="static")
+
 
 
 
@@ -39,8 +43,10 @@ app.mount("/static", StaticFiles(directory=os.path.join(THIS_DIR, "static")), na
 
 
 
-AVAILABLE_TICKERS = ['TUZ5', 'FVZ5', 'TYZ5']
+
+AVAILABLE_TICKERS = ['TUZ5', 'FVZ5', 'TYZ5', 'USZ25']
 ticker_data = {}
+
 
 
 
@@ -58,7 +64,8 @@ def load_all_tickers():
                 continue
             
             print(f"Loading {ticker} from {file_path}...")
-            data = pd.read_csv(file_path)
+            # Add encoding parameter to handle different CSV encodings
+            data = pd.read_csv(file_path, encoding='utf-8')
             df = df_maker(data)
             
             # Build shifted datetime for plotting
@@ -81,6 +88,8 @@ def load_all_tickers():
             
         except Exception as e:
             print(f"✗ Error loading {ticker}: {e}")
+            import traceback
+            traceback.print_exc()
 
 
 
@@ -90,11 +99,12 @@ load_all_tickers()
 
 
 
+
 # If no tickers loaded, load default TUZ5 data for backward compatibility
 if not ticker_data:
     print("⚠️  No ticker data loaded, trying default TUZ5.csv...")
     try:
-        data = pd.read_csv(os.path.join(THIS_DIR, 'data', 'TUZ5.csv'))
+        data = pd.read_csv(os.path.join(THIS_DIR, 'data', 'tuz5.csv'), encoding='utf-8')
         df = df_maker(data)
         
         df['TimeDT'] = pd.to_datetime(
@@ -114,6 +124,9 @@ if not ticker_data:
         print(f"✓ Loaded default TUZ5 data: {len(df)} records")
     except Exception as e:
         print(f"✗ Critical error loading default data: {e}")
+        import traceback
+        traceback.print_exc()
+
 
 
 
@@ -121,6 +134,7 @@ if not ticker_data:
 # ============================================================================
 # UTILITY FUNCTIONS - NaN Handling
 # ============================================================================
+
 
 
 
@@ -147,12 +161,14 @@ def convert_nan_to_none(obj):
 
 
 
+
 def get_ticker_data(ticker):
     """Get dataframe for a specific ticker"""
     ticker_upper = ticker.upper()
     if ticker_upper not in ticker_data:
         raise HTTPException(status_code=404, detail=f"Ticker {ticker} not found. Available: {list(ticker_data.keys())}")
     return ticker_data[ticker_upper]
+
 
 
 
@@ -171,9 +187,21 @@ def get_trading_days_list(ticker):
 
 
 
+@app.get("/api/available-tickers")
+async def get_available_tickers():
+    """Returns list of available tickers"""
+    return {
+        "tickers": list(ticker_data.keys()),
+        "count": len(ticker_data)
+    }
+
+
+
+
 # ============================================================================
 # API ENDPOINTS - Trading Days
 # ============================================================================
+
 
 
 
@@ -224,9 +252,11 @@ async def get_trading_days(ticker: Optional[str] = Query(None)):
 
 
 
+
 # ============================================================================
 # ROUTES
 # ============================================================================
+
 
 
 
@@ -238,6 +268,7 @@ async def root():
         return "<h1>Landing page not found</h1>"
     with open(html_path, "r", encoding="utf-8") as f:
         return f.read()
+
 
 
 
@@ -259,9 +290,11 @@ async def dashboard():
 
 
 
+
 # ============================================================================
 # CHART DATA ENDPOINT - WITH PROPER PRICE HANDLING
 # ============================================================================
+
 
 
 
@@ -430,9 +463,11 @@ async def get_chart_data(
 
 
 
+
 # ============================================================================
 # HELPER FUNCTIONS
 # ============================================================================
+
 
 
 
@@ -456,9 +491,11 @@ def get_agg_df(filtered, agg_mode, selected_days, full_df):
 
 
 
+
 # ============================================================================
 # STARTUP EVENT
 # ============================================================================
+
 
 
 
@@ -476,12 +513,11 @@ async def startup_event():
     print("=" * 70)
     print("✓ Available Endpoints:")
     print("  - GET / (Landing page)")
-    print("  - GET /dashboard (Dashboard - uses TUZ5 by default)")
+    print("  - GET /dashboard (Dashboard)")
+    print("  - GET /api/available-tickers (List all available tickers)")
     print("  - GET /api/trading-days (Trading days list)")
     print("  - GET /api/chart-data (Chart data with filters)")
     print("=" * 70)
-
-
 
 
 if __name__ == '__main__':

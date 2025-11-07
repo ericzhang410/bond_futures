@@ -1,5 +1,4 @@
 # bond_futuresBond Futures Dashboard
-https://bond-futures.vercel.app/
 Bond Futures Dashboard is a full-stack web application providing comprehensive overnight rate analysis for treasury bond futures. A FastAPI REST API delivers intraday price analytics, historical data visualization, and multi-ticker comparison. Interactive charts powered by Plotly display real-time trading patterns with customizable date range and weekday filtering. Modern responsive UI built with HTML/CSS/JavaScript offers dark/light mode and dynamic theme switching for enhanced user experience.
 
 Technologies Used
@@ -43,6 +42,5 @@ Responsive grid layout optimized for all screen sizes
 Hover-enabled interactive data inspection on all charts
 
 Multi-day comparison with visual overlays
-
 
 Relative price calculations for normalized analysis
