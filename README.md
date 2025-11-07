@@ -1,46 +1,62 @@
-# bond_futuresBond Futures Dashboard
-Bond Futures Dashboard is a full-stack web application providing comprehensive overnight rate analysis for treasury bond futures. A FastAPI REST API delivers intraday price analytics, historical data visualization, and multi-ticker comparison. Interactive charts powered by Plotly display real-time trading patterns with customizable date range and weekday filtering. Modern responsive UI built with HTML/CSS/JavaScript offers dark/light mode and dynamic theme switching for enhanced user experience.
+# Bond Futures Dashboard
 
-Technologies Used
+A full-stack web application providing comprehensive overnight rate analysis for treasury bond futures. The platform features a FastAPI REST API delivering intraday price analytics, historical data visualization, and multi-ticker comparison capabilities. Interactive charts powered by Plotly display real-time trading patterns with customizable date range and weekday filtering.
 
-FastAPI
+**[View Live Demo](https://bond-futures.vercel.app/)**
 
-Python
+## Overview
 
-Pandas
+The Bond Futures Dashboard offers traders and analysts a powerful tool to track, visualize, and analyze U.S. Treasury bond futures contracts with real-time intraday data, historical comparisons, and advanced statistical overlays.
 
-NumPy
+## Features
 
-Plotly
+### Data & Analytics
+- Explore multiple bond futures tickers (TUZ5 2-Year, FVZ5 5-Year, TYZ5 10-Year, USZ25 Treasury contracts)
+- Real-time intraday price tracking with time-of-day visualization
+- Relative price calculations for normalized analysis
+- Historical price data with comprehensive statistical analysis
+- Multi-day comparison with visual overlays
 
-HTML5/CSS3/JavaScript
+### Visualization & Filtering
+- Interactive calendar-based date range selection for historical analysis
+- Weekday-based filtering for comparative trading day analysis
+- Multiple aggregation modes: None, Selected Mean/SD, Total Mean/SD
+- Mean and standard deviation overlay visualization for trend analysis
+- Hover-enabled interactive data inspection on all charts
+- Responsive grid layout optimized for all screen sizes
 
-Uvicorn
+### User Experience
+- Modern responsive UI built with HTML5/CSS3/JavaScript
+- Dark/light mode theme toggle with persistent preference storage
+- Landing page with live ticker previews showing latest trading data
+- Intuitive dashboard for seamless navigation
+- Real-time data updates across all visualizations
 
-Current Features
+## Technology Stack
 
-Explore multiple bond futures tickers (TUZ5 2-Year, FVZ5 5-Year, TYZ5 10-Year Treasury)
+### Backend
+- **FastAPI** - High-performance Python web framework
+- **Python 3.8+** - Primary programming language
+- **Uvicorn** - ASGI web server
+- **Pandas** - Data manipulation and analysis
+- **NumPy** - Numerical computing
 
-Real-time intraday price tracking with time-of-day visualization
+### Frontend
+- **HTML5** - Semantic markup
+- **CSS3** - Responsive styling with grid layouts
+- **JavaScript (Vanilla)** - Client-side interactivity
+- **Plotly** - Interactive data visualization library
 
-Interactive calendar-based date range selection for historical analysis
+### Data & Deployment
+- **CSV** - Data storage format
+- **Vercel** - Deployment platform
 
-Weekday-based filtering for comparative analysis across trading days
+## Getting Started
 
-Multiple aggregation modes (None, Selected Mean/SD, Total Mean/SD)
+### Prerequisites
+- Python 3.8 or higher
+- pip package manager
 
-Historical price data with statistical analysis and metrics
+### Installation
 
-Mean and standard deviation overlay visualization for trend analysis
-
-Dark/light mode theme toggle with persistent preference storage
-
-Landing page with live ticker previews showing latest trading data
-
-Responsive grid layout optimized for all screen sizes
-
-Hover-enabled interactive data inspection on all charts
-
-Multi-day comparison with visual overlays
-
-Relative price calculations for normalized analysis
+1. Clone the repository:
